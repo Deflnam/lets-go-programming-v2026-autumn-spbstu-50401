@@ -4,23 +4,17 @@ import "fmt"
 
 func main() {
 	var departments int
-
 	_, err := fmt.Scan(&departments)
-
 	if err != nil {
 		fmt.Println("Invalid input")
-
 		return
 	}
 
 	for range departments {
 		var employees int
-
 		_, err = fmt.Scan(&employees)
-
 		if err != nil {
 			fmt.Println("Invalid input")
-
 			return
 		}
 
@@ -29,14 +23,10 @@ func main() {
 
 		for range employees {
 			var operator string
-
 			var temp int
-
 			_, err = fmt.Scan(&operator, &temp)
-
 			if err != nil {
 				fmt.Println("Invalid input")
-
 				return
 			}
 
@@ -45,7 +35,6 @@ func main() {
 					minTemp = temp
 				}
 			}
-
 			if operator == "<=" {
 				if temp < maxTemp {
 					maxTemp = temp
