@@ -14,7 +14,6 @@ func main() {
 	for i := 0; i < departments; i++ {
 		var employees int
 		_, err = fmt.Scan(&employees)
-
 		if err != nil {
 			fmt.Println("Invalid input")
 
