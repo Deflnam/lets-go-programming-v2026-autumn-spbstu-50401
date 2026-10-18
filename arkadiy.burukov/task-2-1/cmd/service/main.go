@@ -3,48 +3,48 @@ package main
 import "fmt"
 
 func main() {
-	var n int
+	var deptCount int
 
-	_, err := fmt.Scan(&n)
+	_, err := fmt.Scan(&deptCount)
 	if err != nil {
 		fmt.Println("Invalid input")
 		return
 	}
 
-	for i := 0; i < n; i++ {
-		var k int
-		_, err = fmt.Scan(&k)
+	for i := 0; i < deptCount; i++ {
+		var employeeCount int
+		_, err = fmt.Scan(&employeeCount)
 		if err != nil {
 			fmt.Println("Invalid input")
 			return
 		}
 
-		low := 15
-		high := 30
+		minTemp := 15
+		maxTemp := 30
 
-		for j := 0; j < k; j++ {
-			var op string
-			var t int
-			_, err = fmt.Scan(&op, &t)
+		for j := 0; j < employeeCount; j++ {
+			var operator string
+			var temp int
+			_, err = fmt.Scan(&operator, &temp)
 			if err != nil {
 				fmt.Println("Invalid input")
 				return
 			}
 
-			if op == ">=" {
-				if t > low {
-					low = t
+			if operator == ">=" {
+				if temp > minTemp {
+					minTemp = temp
 				}
 			}
-			if op == "<=" {
-				if t < high {
-					high = t
+			if operator == "<=" {
+				if temp < maxTemp {
+					maxTemp = temp
 				}
 			}
-			if low > high {
+			if minTemp > maxTemp {
 				fmt.Println(-1)
 			} else {
-				fmt.Println(low)
+				fmt.Println(minTemp)
 			}
 
 		}
