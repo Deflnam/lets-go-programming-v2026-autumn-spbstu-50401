@@ -4,6 +4,7 @@ import "fmt"
 
 func main() {
 	var departments int
+
 	_, err := fmt.Scan(&departments)
 
 	if err != nil {
@@ -14,6 +15,7 @@ func main() {
 
 	for range departments {
 		var employees int
+
 		_, err = fmt.Scan(&employees)
 
 		if err != nil {
@@ -27,9 +29,11 @@ func main() {
 
 		for range employees {
 			var operator string
+
 			var temp int
 
 			_, err = fmt.Scan(&operator, &temp)
+
 			if err != nil {
 				fmt.Println("Invalid input")
 
