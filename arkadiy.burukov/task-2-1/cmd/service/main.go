@@ -7,7 +7,7 @@ func main() {
 
 	_, err := fmt.Scan(&departments)
 	if err != nil {
-		fmt.Println("Invalid input")
+		fmt.Println("Invalid input", err)
 
 		return
 	}
@@ -17,7 +17,7 @@ func main() {
 
 		_, err = fmt.Scan(&employees)
 		if err != nil {
-			fmt.Println("Invalid input")
+			fmt.Println("Invalid input", err)
 
 			return
 		}
@@ -33,21 +33,17 @@ func main() {
 
 			_, err = fmt.Scan(&operator, &temp)
 			if err != nil {
-				fmt.Println("Invalid input")
+				fmt.Println("Invalid input", err)
 
 				return
 			}
 
-			if operator == ">=" {
-				if temp > minTemp {
-					minTemp = temp
-				}
+			if operator == ">=" && temp > minTemp {
+				minTemp = temp
 			}
 
-			if operator == "<=" {
-				if temp < maxTemp {
-					maxTemp = temp
-				}
+			if operator == "<=" && temp < maxTemp {
+				maxTemp = temp
 			}
 
 			if minTemp > maxTemp {
