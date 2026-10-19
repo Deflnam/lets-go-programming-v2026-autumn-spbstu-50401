@@ -4,6 +4,7 @@ import "fmt"
 
 func main() {
 	var departments int
+
 	_, err := fmt.Scan(&departments)
 	if err != nil {
 		fmt.Println("Invalid input", err)
