@@ -1,8 +1,11 @@
 package parser
 
 import (
+	"bytes"
 	"encoding/xml"
 	"os"
+
+	"golang.org/x/net/html/charset"
 )
 
 type ValCurs struct {
@@ -23,7 +26,10 @@ func Parse(path string) (*ValCurs, error) {
 	}
 
 	var vc ValCurs
-	if err := xml.Unmarshal(data, &vc); err != nil {
+	decoder := xml.NewDecoder(bytes.NewReader(data))
+	decoder.CharsetReader = charset.NewReaderLabel
+
+	if err := decoder.Decode(&vc); err != nil {
 		return nil, err
 	}
 	return &vc, nil
