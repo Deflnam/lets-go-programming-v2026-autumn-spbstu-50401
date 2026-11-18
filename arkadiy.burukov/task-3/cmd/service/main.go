@@ -1,45 +1,71 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"encoding/json"
+	"flag"
+	"os"
+	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 
+	"github.com/Deflnam/task-3/internal/config"
 	"github.com/Deflnam/task-3/internal/parser"
 )
 
+type OutputValute struct {
+	NumCode  int     `json:"num_code"`
+	CharCode string  `json:"char_code"`
+	Value    float64 `json:"value"`
+}
+
 func main() {
-	files := []string{
-		"data/3.xml",
-		"data/4.xml",
-		"data/1.xml",
-		"data/5.xml",
-		"data/2.xml",
+	configPath := flag.String("config", "", "path to config file")
+	flag.Parse()
+
+	if *configPath == "" {
+		panic("config path is required")
 	}
 
-	fmt.Printf("%-12s | %-8s | %s\n", "Дата", "Номинал", "Курс USD (руб.)")
-	fmt.Println(strings.Repeat("-", 40))
+	cfg, err := config.Load(*configPath)
+	if err != nil {
+		panic(err)
+	}
 
-	for _, file := range files {
-		vc, err := parser.ParseFile(file)
+	valCurs, err := parser.Parse(cfg.InputFile)
+	if err != nil {
+		panic(err)
+	}
+
+	var output []OutputValute
+	for _, v := range valCurs.Valutes {
+		val := strings.ReplaceAll(v.Value, ",", ".")
+		rate, err := strconv.ParseFloat(val, 64)
 		if err != nil {
-			log.Printf("Ошибка при чтении %s: %v", file, err)
-			continue
+			panic(err)
 		}
+		output = append(output, OutputValute{
+			NumCode:  v.NumCode,
+			CharCode: v.CharCode,
+			Value:    rate,
+		})
+	}
 
-		for _, v := range vc.Valutes {
-			if v.CharCode == "USD" {
-				raw := strings.ReplaceAll(v.Value, ",", ".")
-				rate, err := strconv.ParseFloat(raw, 64)
-				if err != nil {
-					log.Printf("Ошибка парсинга курса для %s: %v", vc.Date, err)
-					continue
-				}
+	sort.Slice(output, func(i, j int) bool {
+		return output[i].Value > output[j].Value
+	})
 
-				fmt.Printf("%-12s | %-8d | %.4f\n", vc.Date, v.Nominal, rate)
-				break
-			}
-		}
+	jsonData, err := json.MarshalIndent(output, "", "    ")
+	if err != nil {
+		panic(err)
+	}
+
+	dir := filepath.Dir(cfg.OutputFile)
+	if err := os.MkdirAll(dir, 0750); err != nil {
+		panic(err)
+	}
+
+	if err := os.WriteFile(cfg.OutputFile, jsonData, 0644); err != nil {
+		panic(err)
 	}
 }

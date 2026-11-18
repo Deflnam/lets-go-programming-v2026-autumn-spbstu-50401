@@ -7,17 +7,16 @@ import (
 
 type ValCurs struct {
 	XMLName xml.Name `xml:"ValCurs"`
-	Date    string   `xml:"Date,attr"`
 	Valutes []Valute `xml:"Valute"`
 }
 
 type Valute struct {
+	NumCode  int    `xml:"NumCode"`
 	CharCode string `xml:"CharCode"`
-	Nominal  int    `xml:"Nominal"`
 	Value    string `xml:"Value"`
 }
 
-func ParseFile(path string) (*ValCurs, error) {
+func Parse(path string) (*ValCurs, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
