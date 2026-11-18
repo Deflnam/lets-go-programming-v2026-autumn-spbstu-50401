@@ -2,24 +2,44 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"strconv"
+	"strings"
 
 	"github.com/Deflnam/task-3/internal/parser"
 )
 
 func main() {
-	fmt.Println("Запуск программы для task-3 (Работа с библиотеками)")
-
 	files := []string{
-		"data/1.xml",
-		"data/2.xml",
 		"data/3.xml",
 		"data/4.xml",
+		"data/1.xml",
 		"data/5.xml",
+		"data/2.xml",
 	}
+
+	fmt.Printf("%-12s | %-8s | %s\n", "Дата", "Номинал", "Курс USD (руб.)")
+	fmt.Println(strings.Repeat("-", 40))
 
 	for _, file := range files {
-		parser.ParseFile(file)
-	}
+		vc, err := parser.ParseFile(file)
+		if err != nil {
+			log.Printf("Ошибка при чтении %s: %v", file, err)
+			continue
+		}
 
-	fmt.Println("Программа успешно завершена.")
+		for _, v := range vc.Valutes {
+			if v.CharCode == "USD" {
+				raw := strings.ReplaceAll(v.Value, ",", ".")
+				rate, err := strconv.ParseFloat(raw, 64)
+				if err != nil {
+					log.Printf("Ошибка парсинга курса для %s: %v", vc.Date, err)
+					continue
+				}
+
+				fmt.Printf("%-12s | %-8d | %.4f\n", vc.Date, v.Nominal, rate)
+				break
+			}
+		}
+	}
 }
