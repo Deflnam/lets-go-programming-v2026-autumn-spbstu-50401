@@ -1,6 +1,6 @@
 module github.com/Deflnam/task-3
 
-go 1.26.0
+go 1.22.7
 
 require (
 	golang.org/x/net v0.35.0
