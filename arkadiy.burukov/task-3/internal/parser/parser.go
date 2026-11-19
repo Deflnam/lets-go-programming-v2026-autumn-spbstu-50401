@@ -3,6 +3,7 @@ package parser
 import (
 	"bytes"
 	"encoding/xml"
+	"fmt"
 	"os"
 
 	"golang.org/x/net/html/charset"
@@ -22,15 +23,16 @@ type Valute struct {
 func Parse(path string) (*ValCurs, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("read file: %w", err)
 	}
 
-	var vc ValCurs
+	var result ValCurs
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	decoder.CharsetReader = charset.NewReaderLabel
 
-	if err := decoder.Decode(&vc); err != nil {
-		return nil, err
+	if err := decoder.Decode(&result); err != nil {
+		return nil, fmt.Errorf("decode xml: %w", err)
 	}
-	return &vc, nil
+
+	return &result, nil
 }

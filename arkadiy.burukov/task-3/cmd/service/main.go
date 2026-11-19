@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -37,16 +38,17 @@ func main() {
 		panic(err)
 	}
 
-	var output []OutputValute
-	for _, v := range valCurs.Valutes {
-		val := strings.ReplaceAll(v.Value, ",", ".")
+	output := make([]OutputValute, 0, len(valCurs.Valutes))
+	for _, valute := range valCurs.Valutes {
+		val := strings.ReplaceAll(valute.Value, ",", ".")
 		rate, err := strconv.ParseFloat(val, 64)
 		if err != nil {
-			panic(err)
+			panic(fmt.Errorf("parse float: %w", err))
 		}
+
 		output = append(output, OutputValute{
-			NumCode:  v.NumCode,
-			CharCode: v.CharCode,
+			NumCode:  valute.NumCode,
+			CharCode: valute.CharCode,
 			Value:    rate,
 		})
 	}
@@ -57,15 +59,15 @@ func main() {
 
 	jsonData, err := json.MarshalIndent(output, "", "    ")
 	if err != nil {
-		panic(err)
+		panic(fmt.Errorf("marshal json: %w", err))
 	}
 
 	dir := filepath.Dir(cfg.OutputFile)
 	if err := os.MkdirAll(dir, 0750); err != nil {
-		panic(err)
+		panic(fmt.Errorf("create dir: %w", err))
 	}
 
-	if err := os.WriteFile(cfg.OutputFile, jsonData, 0644); err != nil {
-		panic(err)
+	if err := os.WriteFile(cfg.OutputFile, jsonData, 0600); err != nil {
+		panic(fmt.Errorf("write file: %w", err))
 	}
 }
