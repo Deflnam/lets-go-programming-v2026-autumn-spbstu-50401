@@ -20,6 +20,11 @@ type OutputValute struct {
 	Value    float64 `json:"value"`
 }
 
+const (
+	outputDirPerm  os.FileMode = 0o750
+	outputFilePerm os.FileMode = 0o600
+)
+
 func main() {
 	configPath := flag.String("config", "", "path to config file")
 	flag.Parse()
@@ -66,10 +71,10 @@ func main() {
 	}
 
 	dir := filepath.Dir(cfg.OutputFile)
-	if err := os.MkdirAll(dir, 0o750); err != nil {
+	if err := os.MkdirAll(dir, outputDirPerm); err != nil {
 		panic(fmt.Errorf("create dir: %w", err))
 	}
-	if err := os.WriteFile(cfg.OutputFile, jsonData, 0o600); err != nil {
+	if err := os.WriteFile(cfg.OutputFile, jsonData, outputFilePerm); err != nil {
 		panic(fmt.Errorf("write file: %w", err))
 	}
 }
