@@ -43,7 +43,6 @@ func main() {
 	for _, valute := range valCurs.Valutes {
 		val := strings.ReplaceAll(valute.Value, ",", ".")
 		rate, err := strconv.ParseFloat(val, 64)
-
 		if err != nil {
 			panic(fmt.Errorf("parse float: %w", err))
 		}
@@ -65,11 +64,9 @@ func main() {
 	}
 
 	dir := filepath.Dir(cfg.OutputFile)
-
 	if err := os.MkdirAll(dir, 0750); err != nil {
 		panic(fmt.Errorf("create dir: %w", err))
 	}
-
 	if err := os.WriteFile(cfg.OutputFile, jsonData, 0600); err != nil {
 		panic(fmt.Errorf("write file: %w", err))
 	}
