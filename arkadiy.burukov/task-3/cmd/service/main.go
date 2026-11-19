@@ -41,8 +41,10 @@ func main() {
 	output := make([]OutputValute, 0, len(valCurs.Valutes))
 
 	for _, valute := range valCurs.Valutes {
-		val := strings.ReplaceAll(valute.Value, ",", ".")
-		rate, err := strconv.ParseFloat(val, 64)
+		rate, err := strconv.ParseFloat(
+			strings.ReplaceAll(valute.Value, ",", "."),
+			64,
+		)
 		if err != nil {
 			panic(fmt.Errorf("parse float: %w", err))
 		}
