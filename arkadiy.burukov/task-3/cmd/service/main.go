@@ -39,9 +39,11 @@ func main() {
 	}
 
 	output := make([]OutputValute, 0, len(valCurs.Valutes))
+
 	for _, valute := range valCurs.Valutes {
 		val := strings.ReplaceAll(valute.Value, ",", ".")
 		rate, err := strconv.ParseFloat(val, 64)
+
 		if err != nil {
 			panic(fmt.Errorf("parse float: %w", err))
 		}
@@ -63,6 +65,7 @@ func main() {
 	}
 
 	dir := filepath.Dir(cfg.OutputFile)
+
 	if err := os.MkdirAll(dir, 0750); err != nil {
 		panic(fmt.Errorf("create dir: %w", err))
 	}
