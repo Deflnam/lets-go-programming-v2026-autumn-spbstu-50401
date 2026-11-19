@@ -27,6 +27,7 @@ func Parse(path string) (*ValCurs, error) {
 	}
 
 	var result ValCurs
+
 	decoder := xml.NewDecoder(bytes.NewReader(data))
 	decoder.CharsetReader = charset.NewReaderLabel
 
