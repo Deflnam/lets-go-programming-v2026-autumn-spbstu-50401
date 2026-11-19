@@ -66,10 +66,10 @@ func main() {
 	}
 
 	dir := filepath.Dir(cfg.OutputFile)
-	if err := os.MkdirAll(dir, 0750); err != nil {
+	if err := os.MkdirAll(dir, 0o750); err != nil {
 		panic(fmt.Errorf("create dir: %w", err))
 	}
-	if err := os.WriteFile(cfg.OutputFile, jsonData, 0600); err != nil {
+	if err := os.WriteFile(cfg.OutputFile, jsonData, 0o600); err != nil {
 		panic(fmt.Errorf("write file: %w", err))
 	}
 }
