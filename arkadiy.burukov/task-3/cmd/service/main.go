@@ -1,0 +1,79 @@
+package main
+
+import (
+	"encoding/json"
+	"flag"
+	"fmt"
+	"os"
+	"path/filepath"
+	"sort"
+	"strconv"
+	"strings"
+
+	"github.com/Deflnam/task-3/internal/config"
+	"github.com/Deflnam/task-3/internal/parser"
+)
+
+type OutputValute struct {
+	NumCode  int     `json:"num_code"`
+	CharCode string  `json:"char_code"`
+	Value    float64 `json:"value"`
+}
+
+const (
+	outputDirPerm  os.FileMode = 0o750
+	outputFilePerm os.FileMode = 0o600
+)
+
+func main() {
+	configPath := flag.String("config", "", "path to config file")
+	flag.Parse()
+
+	if *configPath == "" {
+		panic("config path is required")
+	}
+
+	cfg, err := config.Load(*configPath)
+	if err != nil {
+		panic(err)
+	}
+
+	valCurs, err := parser.Parse(cfg.InputFile)
+	if err != nil {
+		panic(err)
+	}
+
+	output := make([]OutputValute, 0, len(valCurs.Valutes))
+
+	for _, valute := range valCurs.Valutes {
+		rate, err := strconv.ParseFloat(
+			strings.ReplaceAll(valute.Value, ",", "."),
+			64,
+		)
+		if err != nil {
+			panic(fmt.Errorf("parse float: %w", err))
+		}
+
+		output = append(output, OutputValute{
+			NumCode:  valute.NumCode,
+			CharCode: valute.CharCode,
+			Value:    rate,
+		})
+	}
+
+	sort.Slice(output, func(i, j int) bool {
+		return output[i].Value > output[j].Value
+	})
+
+	jsonData, err := json.MarshalIndent(output, "", "    ")
+	if err != nil {
+		panic(fmt.Errorf("marshal json: %w", err))
+	}
+
+	dir := filepath.Dir(cfg.OutputFile)
+	if err := os.MkdirAll(dir, outputDirPerm); err != nil {
+		panic(fmt.Errorf("create dir: %w", err))
+	} else if err := os.WriteFile(cfg.OutputFile, jsonData, outputFilePerm); err != nil {
+		panic(fmt.Errorf("write file: %w", err))
+	}
+}
