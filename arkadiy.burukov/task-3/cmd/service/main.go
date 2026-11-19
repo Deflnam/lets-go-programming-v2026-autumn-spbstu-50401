@@ -73,8 +73,7 @@ func main() {
 	dir := filepath.Dir(cfg.OutputFile)
 	if err := os.MkdirAll(dir, outputDirPerm); err != nil {
 		panic(fmt.Errorf("create dir: %w", err))
-	}
-	if err := os.WriteFile(cfg.OutputFile, jsonData, outputFilePerm); err != nil {
+	} else if err := os.WriteFile(cfg.OutputFile, jsonData, outputFilePerm); err != nil {
 		panic(fmt.Errorf("write file: %w", err))
 	}
 }
